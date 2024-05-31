@@ -133,9 +133,9 @@ if pagina == 'Previsão Brasileirão Série A':
                     ((np.e ** (-m2)) * (m2 ** (y))) / (math.factorial(y)))
 
 
-        prob_vitoria_time1 = max(sum(f(x, y) for x in range(6) for y in range(6) if x > y),0)
-        prob_empate = max(sum(f(x, y) for x in range(6) for y in range(6) if x == y),0)
-        prob_vitoria_time2 = max(sum(f(x, y) for x in range(6) for y in range(6) if x < y),0)
+        prob_vitoria_time1 = sum(f(x, y) for x in range(6) for y in range(6) if x > y)
+        prob_empate = sum(f(x, y) for x in range(6) for y in range(6) if x == y)
+        prob_vitoria_time2 = sum(f(x, y) for x in range(6) for y in range(6) if x < y)
 
         imagens = {"Vasco": "https://logodownload.org/wp-content/uploads/2016/09/vasco-logo-4.png",
                    "São Paulo": "https://logodownload.org/wp-content/uploads/2016/09/sao-paulo-logo-escudo-768x766.png",
