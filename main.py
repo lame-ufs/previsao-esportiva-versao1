@@ -10,7 +10,7 @@ def regressao(x, y):
     a0 = (sx2 * sy - sxy * sx) / (n * sx2 - sx ** 2)
     a1 = (n * sxy - sx * sy) / (n * sx2 - sx ** 2)
     return a0, a1
-def media(
+
 
 
 # Carregar os dados do arquivo CSV
