@@ -10,6 +10,7 @@ def regressao(x, y):
     a0 = (sx2 * sy - sxy * sx) / (n * sx2 - sx ** 2)
     a1 = (n * sxy - sx * sy) / (n * sx2 - sx ** 2)
     return a0, a1
+def media(
 
 
 # Carregar os dados do arquivo CSV
@@ -56,7 +57,7 @@ if pagina == 'Previsão Brasileirão Série A':
           
         x = min(tam_casa,tam_fora)
         
-
+        media_casa, media_fora = {}, {}
         # Calcular as previsões apenas para os times escolhidos pelo usuário
         for time in [time1, time2]:
             gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))[:x]
@@ -64,6 +65,7 @@ if pagina == 'Previsão Brasileirão Série A':
             gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))[:x]
             gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:x]
 
+           
             previsoes_equipe = {}
             for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
                                         "Gols sofridos fora de casa"],
@@ -73,6 +75,13 @@ if pagina == 'Previsão Brasileirão Série A':
                 previsoes_equipe[tipo_gol] = max(previsao,0)
 
             previsoes[time] = previsoes_equipe
+ 
+            medias_equipe = {}
+            for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
+                                        "Gols sofridos fora de casa"],
+                                       [gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
+                 medias_equipe[tipo_gol] = dados.mean()                    
+            media_previsoes[time] = medias_equipe
 
         # Exibir as previsões apenas para os times escolhidos pelo usuário
         # for time in [time1, time2]:
