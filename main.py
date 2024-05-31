@@ -146,7 +146,7 @@ if pagina == 'Previsão Brasileirão Série A':
         prob_empate = sum(f(x, y) for x in range(9) for y in range(9) if x == y)
         prob_vitoria_time2 = sum(f(x, y) for x in range(9) for y in range(9) if x < y)
 
-        soma=prob_vitoria_time1+ prob_empate+prob_vitoria_time2
+        
 
         imagens = {"Vasco": "https://logodownload.org/wp-content/uploads/2016/09/vasco-logo-4.png",
                    "São Paulo": "https://logodownload.org/wp-content/uploads/2016/09/sao-paulo-logo-escudo-768x766.png",
@@ -180,7 +180,7 @@ if pagina == 'Previsão Brasileirão Série A':
                     st.markdown(f"""
                             <div style='text-align: center;'>
                                 <h1 style='color: #2E1F84;'>{time1}</h1>
-                                <h1 style='color: #2E1F84;'>{prob_vitoria_time1 * 100/soma:.2f}%</h1>
+                                <h1 style='color: #2E1F84;'>{prob_vitoria_time1 * 100:.2f}%</h1>
                                 <img src='{imagens[time1]}'  width='200'>
                     </div>
                          """, unsafe_allow_html=True)
@@ -188,7 +188,7 @@ if pagina == 'Previsão Brasileirão Série A':
             with col2:
                 st.markdown(f""" <div style='text-align: center;'>
                             <h1 style='color: #FFBE0B;'>Empate</h1>
-                            <h1 style='color: #FFBE0B;'>{prob_empate * 100/soma:.2f}%</h1>
+                            <h1 style='color: #FFBE0B;'>{prob_empate * 100:.2f}%</h1>
                              </div>""", unsafe_allow_html=True)
 
 
@@ -196,7 +196,7 @@ if pagina == 'Previsão Brasileirão Série A':
                 if time1 in imagens:
                     st.markdown(f"""<div style='text-align: center;'>
                         <h1 style='color: #2E1F84;'>{time2}</h1>
-                        <h1 style='color: #2E1F84;'>{prob_vitoria_time2 * 100/soma:.2f}%</h1>
+                        <h1 style='color: #2E1F84;'>{prob_vitoria_time2 * 100:.2f}%</h1>
                         <img src='{imagens[time2]}'  width='200'></div>
                         """, unsafe_allow_html=True)
 
