@@ -25,7 +25,7 @@ if pagina == 'Previsão Brasileirão Série A':
     st.markdown("<h2 style='text-align: center; color: #2E1F84; font-size: 40px;'>Probabilidades dos Jogos ⚽<br>  </h1>", unsafe_allow_html=True)
     st.markdown('---')
 
-    times = ["Atlético Goianiense","Athletico Paranaense","Atlético Mineiro","Botafogo","Bahia", "Cruzeiro","Cuiabá","Criciúma","Corinthians",
+    times = ["Atlético Goianiense","Athletico Paranaense","Atlético-MG","Botafogo","Bahia", "Cruzeiro","Cuiabá","Criciúma","Corinthians",
              "Flamengo","Fluminense","Fortaleza","Grêmio","Internacional","Juventude","Palmeiras","Red Bull Bragantino","São Paulo","Vasco","Vitória"]
     time1 = st.selectbox("Time mandante:", ["Selecione o time"] +times)
     time2 = st.selectbox("Time visitante: ", ["Selecione o time"] + times)
