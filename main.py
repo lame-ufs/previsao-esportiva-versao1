@@ -55,15 +55,14 @@ if pagina == 'Previsão Brasileirão Série A':
         tam_fora = len(lista_fora)
           
         x = min(tam_casa,tam_fora)
-        lista_casa = lista_casa[:x]
-        lista_fora = lista_fora[:x]
+        
 
         # Calcular as previsões apenas para os times escolhidos pelo usuário
         for time in [time1, time2]:
-            gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))
-            gols_sofridos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gs_casa'].values[0])))
-            gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))
-            gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))
+            gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))[:x]
+            gols_sofridos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gs_casa'].values[0])))[:x]
+            gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))[:x]
+            gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:x]
 
             previsoes_equipe = {}
             for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
