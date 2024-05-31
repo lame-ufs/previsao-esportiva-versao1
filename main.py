@@ -142,9 +142,9 @@ if pagina == 'Previsão Brasileirão Série A':
                     ((np.e ** (-m2)) * (m2 ** (y))) / (math.factorial(y)))
 
 
-        prob_vitoria_time1 = sum(f(x, y) for x in range(6) for y in range(6) if x > y)
-        prob_empate = sum(f(x, y) for x in range(6) for y in range(6) if x == y)
-        prob_vitoria_time2 = sum(f(x, y) for x in range(6) for y in range(6) if x < y)
+        prob_vitoria_time1 = sum(f(x, y) for x in range(9) for y in range(9) if x > y)
+        prob_empate = sum(f(x, y) for x in range(9) for y in range(9) if x == y)
+        prob_vitoria_time2 = sum(f(x, y) for x in range(9) for y in range(9) if x < y)
 
         soma=prob_vitoria_time1+ prob_empate+prob_vitoria_time2
 
