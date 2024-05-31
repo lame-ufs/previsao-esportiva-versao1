@@ -48,10 +48,15 @@ if pagina == 'Previsão Brasileirão Série A':
       else:
         # Dicionário para armazenar as previsões de cada equipe
         previsoes = {}
-
-        tam_casa = len(list(map(int, eval(full.loc[full['time'] == time1, 'gf_casa'].values[0]))))
-        tam_fora = len(list(map(int, eval(full.loc[full['time'] == time2, 'gf_fora'].values[0]))))
+        lista_casa = list(map(int, eval(full.loc[full['time'] == time1, 'gf_casa'].values[0])))
+        lista_fora = list(map(int, eval(full.loc[full['time'] == time2, 'gf_fora'].values[0])))
+          
+        tam_casa = len(lista_casa)
+        tam_fora = len(lista_fora)
+          
         x = min(tam_casa,tam_fora)
+        lista_casa = lista_casa[:x]
+        lista_fora = lista_fora[:x]
 
         # Calcular as previsões apenas para os times escolhidos pelo usuário
         for time in [time1, time2]:
