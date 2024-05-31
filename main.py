@@ -70,7 +70,7 @@ if pagina == 'Previsão Brasileirão Série A':
                                        [gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
                 a0, a1 = regressao(np.arange(1, len(dados) + 1), dados)
                 previsao = a0 + a1 * (x+1)  # Previsão para x+1
-                previsoes_equipe[tipo_gol] = max(previsao,0)
+                previsoes_equipe[tipo_gol] = previsao
 
             previsoes[time] = previsoes_equipe
 
@@ -133,9 +133,9 @@ if pagina == 'Previsão Brasileirão Série A':
                     ((np.e ** (-m2)) * (m2 ** (y))) / (math.factorial(y)))
 
 
-        prob_vitoria_time1 = sum(f(x, y) for x in range(6) for y in range(6) if x > y)
-        prob_empate = sum(f(x, y) for x in range(6) for y in range(6) if x == y)
-        prob_vitoria_time2 = sum(f(x, y) for x in range(6) for y in range(6) if x < y)
+        prob_vitoria_time1 = max(sum(f(x, y) for x in range(6) for y in range(6) if x > y),0)
+        prob_empate = max(sum(f(x, y) for x in range(6) for y in range(6) if x == y),0)
+        prob_vitoria_time2 = max(sum(f(x, y) for x in range(6) for y in range(6) if x < y),0)
 
         imagens = {"Vasco": "https://logodownload.org/wp-content/uploads/2016/09/vasco-logo-4.png",
                    "São Paulo": "https://logodownload.org/wp-content/uploads/2016/09/sao-paulo-logo-escudo-768x766.png",
