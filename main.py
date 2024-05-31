@@ -76,12 +76,12 @@ if pagina == 'Previsão Brasileirão Série A':
 
             previsoes[time] = previsoes_equipe
  
-            medias_equipe = {}
-            for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
-                                        "Gols sofridos fora de casa"],
-                                       [gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
-                 medias_equipe[tipo_gol] = dados.mean()                    
-            media_previsoes[time] = medias_equipe
+           # medias_equipe = {}
+           # for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
+                                       # "Gols sofridos fora de casa"],
+                                       #[gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
+                # medias_equipe[tipo_gol] = dados.mean()                    
+           # media_previsoes[time] = medias_equipe
 
         # Exibir as previsões apenas para os times escolhidos pelo usuário
         # for time in [time1, time2]:
