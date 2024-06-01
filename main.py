@@ -60,10 +60,10 @@ if pagina == 'Previsão Brasileirão Série A':
         media_casa, media_fora = {}, {}
         # Calcular as previsões apenas para os times escolhidos pelo usuário
         for time in [time1, time2]:
-            gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))[:10]
-            gols_sofridos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gs_casa'].values[0])))[:10]
-            gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))[:10]
-            gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:10]
+            gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))[:x]
+            gols_sofridos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gs_casa'].values[0])))[:x]
+            gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))[:x]
+            gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:x]
 
            
             previsoes_equipe = {}
@@ -71,7 +71,7 @@ if pagina == 'Previsão Brasileirão Série A':
                                         "Gols sofridos fora de casa"],
                                        [gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
                 a0, a1 = regressao(np.arange(1, len(dados) + 1), dados)
-                previsao = a0 + a1 * (11)  # Previsão para x+1
+                previsao = a0 + a1 * (x+1)  # Previsão para x+1
                 previsoes_equipe[tipo_gol] = max(previsao,0)
 
             previsoes[time] = previsoes_equipe
