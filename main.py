@@ -66,13 +66,22 @@ if pagina == 'Previsão Brasileirão Série A':
             gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:x]
 
            
+           # previsoes_equipe = {}
+           # for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
+                                      #  "Gols sofridos fora de casa"],
+                                       #[gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
+                #a0, a1 = regressao(np.arange(1, len(dados) + 1), dados)
+                #previsao = a0 + a1 * (x+1)  # Previsão para x+1
+               # previsoes_equipe[tipo_gol] = max(previsao,0)
+
+           # previsoes[time] = previsoes_equipe
+
             previsoes_equipe = {}
             for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
                                         "Gols sofridos fora de casa"],
                                        [gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
-                a0, a1 = regressao(np.arange(1, len(dados) + 1), dados)
-                previsao = a0 + a1 * (x+1)  # Previsão para x+1
-                previsoes_equipe[tipo_gol] = max(previsao,0)
+                previsao = sum(dados)/len(dados  # Previsão para x+1
+                previsoes_equipe[tipo_gol] = previsao
 
             previsoes[time] = previsoes_equipe
  
