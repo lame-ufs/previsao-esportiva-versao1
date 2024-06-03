@@ -80,7 +80,7 @@ if pagina == 'Previsão Brasileirão Série A':
             for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
                                         "Gols sofridos fora de casa"],
                                        [gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
-                previsao = sum(dados)/len(dados  # Previsão para x+1
+                previsao = sum(dados)/len(dados)  # Previsão para x+1
                 previsoes_equipe[tipo_gol] = previsao
 
             previsoes[time] = previsoes_equipe
