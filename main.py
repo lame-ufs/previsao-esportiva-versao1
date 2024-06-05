@@ -60,10 +60,10 @@ if pagina == 'Previsão Brasileirão Série A':
         media_casa, media_fora = {}, {}
         # Calcular as previsões apenas para os times escolhidos pelo usuário
         for time in [time1, time2]:
-            gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))[:10][::-1]
-            gols_sofridos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gs_casa'].values[0])))[:10][::-1]
-            gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))[:10][::-1]
-            gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:10][::-1]
+            gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))[:5][::-1]
+            gols_sofridos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gs_casa'].values[0])))[:5][::-1]
+            gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))[:5][::-1]
+            gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:5][::-1]
 
            
             #previsoes_equipe = {}
