@@ -1,6 +1,8 @@
 import csv
 from selenium import webdriver
 from unidecode import unidecode
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 import time
 
@@ -46,9 +48,9 @@ def scrapping(team): #Faz a raspagem dos dados
     
     results, conditions = data_collect([], []) #Guarda os dados em duas listas, uma de condição (Casa ou Fora) e uma de resultados dos jogos.
 
-    next_page = browser.find_element(By.CLASS_NAME, 'numbers') 
-    next_page.find_element(By.TAG_NAME, 'a').click() #Acessa a proxima pagina de resultados
-
+    link += '&page=2'
+    browser.get(link)
+    
     results, conditions = data_collect(results, conditions)
 
     #Listas que irao guardar os dados do time
@@ -89,7 +91,9 @@ def add_in_files(): #Adiciona os dados nos arquivos csv
                 
 i = time.time()
 
-with webdriver.Firefox() as browser: #Abre o navegador escolhido
+# Inicializar o navegador Firefox com o driver mais recente
+browser = webdriver.Firefox()
+with browser as browser: #Abre o navegador escolhido
     add_in_files()
 
 f = time.time()
