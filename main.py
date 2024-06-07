@@ -26,7 +26,7 @@ if pagina == 'Previsão Brasileirão Série A':
     st.markdown("<h2 style='text-align: center; color: #2E1F84; font-size: 40px;'>Probabilidades dos Jogos ⚽<br>  </h1>", unsafe_allow_html=True)
     st.markdown('---')
 
-    times = ["Atlético-GO","Athletico Paranaense","Atlético Mineiro","Botafogo","Bahia", "Cruzeiro","Cuiabá","Criciúma","Corinthians",
+    times = ["Atlético Goianiense","Athletico Paranaense","Atlético Mineiro","Botafogo","Bahia", "Cruzeiro","Cuiabá","Criciúma","Corinthians",
              "Flamengo","Fluminense","Fortaleza","Grêmio","Internacional","Juventude","Palmeiras","Red Bull Bragantino","São Paulo","Vasco","Vitória"]
     time1 = st.selectbox("Time mandante:", ["Selecione o time"] +times)
     time2 = st.selectbox("Time visitante: ", ["Selecione o time"] + times)
@@ -165,7 +165,7 @@ if pagina == 'Previsão Brasileirão Série A':
                    "Corinthians": "https://cartolafcmix.com/wp-content/uploads/2022/04/corinthians.png",
                    "Bahia": "https://logodownload.org/wp-content/uploads/2017/02/bahia-ec-logo-01-768x768.png",
                    "Botafogo": "https://logodownload.org/wp-content/uploads/2016/11/botafogo-logo-escudo-768x866.png",
-                   "Atlético Goiani": "https://logodownload.org/wp-content/uploads/2017/02/atletico-goianiense-logo-4.png",
+                   "Atlético Goianiense": "https://logodownload.org/wp-content/uploads/2017/02/atletico-goianiense-logo-4.png",
                    "Athletico Paranaense": "https://logodownload.org/wp-content/uploads/2016/10/atletico-paranaense-logo-escudo-768x768.png",
                    "Atlético Mineiro": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Clube_Atl%C3%A9tico_Mineiro_logo.svg/1810px-Clube_Atl%C3%A9tico_Mineiro_logo.svg.png",
                    "Cruzeiro": "https://upload.wikimedia.org/wikipedia/commons/b/bc/Logo_Cruzeiro_1996.png",
