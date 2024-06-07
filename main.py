@@ -188,24 +188,24 @@ if pagina == 'Previsão Brasileirão Série A':
                 if time1 in imagens:
                     st.markdown(f"""
                             <div style='text-align: center;'>
-                                <h1 style='color: #2E1F84;'>{time1}</h1>
-                                <h1 style='color: #2E1F84;'>{prob_vitoria_time1 * 100:.2f}%</h1>
+                                <h4 style='color: #2E1F84;'>{time1}</h4>
+                                <h4 style='color: #2E1F84;'>{prob_vitoria_time1 * 100:.2f}%</h4>
                                 <img src='{imagens[time1]}'  width='200'>
                     </div>
                          """, unsafe_allow_html=True)
 
             with col2:
                 st.markdown(f""" <div style='text-align: center;'>
-                            <h1 style='color: #FFBE0B;'>Empate</h1>
-                            <h1 style='color: #FFBE0B;'>{prob_empate * 100:.2f}%</h1>
+                            <h4 style='color: #FFBE0B;'>Empate</h4>
+                            <h4 style='color: #FFBE0B;'>{prob_empate * 100:.2f}%</h4>
                              </div>""", unsafe_allow_html=True)
 
 
             with col3:
                 if time1 in imagens:
                     st.markdown(f"""<div style='text-align: center;'>
-                        <h1 style='color: #2E1F84;'>{time2}</h1>
-                        <h1 style='color: #2E1F84;'>{prob_vitoria_time2 * 100:.2f}%</h1>
+                        <h4 style='color: #2E1F84;'>{time2}</h4>
+                        <h4 style='color: #2E1F84;'>{prob_vitoria_time2 * 100:.2f}%</h4>
                         <img src='{imagens[time2]}'  width='200'></div>
                         """, unsafe_allow_html=True)
 
