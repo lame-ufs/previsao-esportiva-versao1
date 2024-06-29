@@ -100,4 +100,5 @@ add_in_files()
 
 f = time.time()
 
-print(f"Execution completed! Time: {((f-i)/60):.2f} mins")
+print(f"Execution completed! Time: {((f-i)//60):.0f} mins and {((f-i)%60):.0f} secs")
+
