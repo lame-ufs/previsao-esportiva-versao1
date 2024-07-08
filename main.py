@@ -202,7 +202,7 @@ if pagina == 'Previsão Brasileirão Série A':
 
 
             with col3:
-                if time1 in imagens:
+                if time2 in imagens:
                     st.markdown(f"""<div style='text-align: center;'>
                         <h4 style='color: #2E1F84;'>{time2}</h4>
                         <h4 style='color: #2E1F84;'>{prob_vitoria_time2 * 100:.2f}%</h4>
