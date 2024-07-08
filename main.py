@@ -1,20 +1,13 @@
-import numpy as np
 import pandas as pd
-import math
+import numpy as np
+from scipy.stats import poisson
+import seaborn as sns
 import streamlit as st
-
-
-def regressao(x, y):
-    n = len(x)
-    sx, sy, sx2, sxy = sum(x), sum(y), sum(x ** 2), sum(x * y)
-    a0 = (sx2 * sy - sxy * sx) / (n * sx2 - sx ** 2)
-    a1 = (n * sxy - sx * sy) / (n * sx2 - sx ** 2)
-    return a0, a1
 
 
 
 # Carregar os dados do arquivo CSV
-full = pd.read_csv("data_teams.csv")
+Dados = pd.read_csv("data_teams.csv")
 
 st.sidebar.header('Menu')
 paginas = ['Previsão Brasileirão Série A', 'Tabelas']
@@ -26,10 +19,12 @@ if pagina == 'Previsão Brasileirão Série A':
     st.markdown("<h2 style='text-align: center; color: #2E1F84; font-size: 40px;'>Probabilidades dos Jogos ⚽<br>  </h1>", unsafe_allow_html=True)
     st.markdown('---')
 
-    times = ["Atlético Goianiense","Athletico Paranaense","Atlético Mineiro","Botafogo","Bahia", "Cruzeiro","Cuiabá","Criciúma","Corinthians",
-             "Flamengo","Fluminense","Fortaleza","Grêmio","Internacional","Juventude","Palmeiras","Red Bull Bragantino","São Paulo","Vasco","Vitória"]
-    time1 = st.selectbox("Time mandante:", ["Selecione o time"] +times)
-    time2 = st.selectbox("Time visitante: ", ["Selecione o time"] + times)
+    time1 = ['São Paulo', 'Flamengo', 'Fortaleza', 'Juventude', 'Cruzeiro', 'Internacional', 'Vitória',
+                 'Atlético Goianiense', 'Palmeiras', 'Botafogo']
+    time2 = ['Red Bull Bragantino', 'Cuiabá', 'Fluminense', 'Grêmio', 'Corinthians', 'Vasco', 'Criciúma',
+                  'Athletico Paranaense', 'Bahia', 'Atlético Mineiro']
+    mandante = st.selectbox("Time mandante:", ["Selecione o time"] +time1)
+    visitante = st.selectbox("Time visitante: ", ["Selecione o time"] + time2)
 
     st.markdown(
         """
@@ -44,120 +39,155 @@ if pagina == 'Previsão Brasileirão Série A':
     )
 
     if st.button('Calcular Probabilidades'):
-      if time1 not in full['time'].unique() or time2 not in full['time'].unique():
+      if mandante not in Dados['time'].unique() or visitante not in Dados['time'].unique():
         st.write("Um ou ambos os times informados não foram encontrados.")
       else:
-        # Dicionário para armazenar as previsões de cada equipe
-        previsoes = {}
-        lista_casa = list(map(int, eval(full.loc[full['time'] == time1, 'gf_casa'].values[0])))
-        lista_fora = list(map(int, eval(full.loc[full['time'] == time2, 'gf_fora'].values[0])))
-          
-        tam_casa = len(lista_casa)
-        tam_fora = len(lista_fora)
-          
-        x = min(tam_casa,tam_fora)
-        
-        media_casa, media_fora = {}, {}
-        # Calcular as previsões apenas para os times escolhidos pelo usuário
-        for time in [time1, time2]:
-            gols_feitos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gf_casa'].values[0])))[:x][::-1]
-            gols_sofridos_casa = list(map(int, eval(full.loc[full['time'] == time, 'gs_casa'].values[0])))[:x][::-1]
-            gols_feitos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gf_fora'].values[0])))[:x][::-1]
-            gols_sofridos_fora = list(map(int, eval(full.loc[full['time'] == time, 'gs_fora'].values[0])))[:x][::-1]
+          def Resultado_Real_Jogos(Dados):
+              resC, resF = [], []
+              times = Dados['time'].unique()
 
-           
-            #previsoes_equipe = {}
-            #for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
-                                        #"Gols sofridos fora de casa"],
-                                       #[gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
-               # a0, a1 = regressao(np.arange(1, len(dados) + 1), dados)
-                #previsao = a0 + a1 * (x+1)  # Previsão para x+1
-                #previsoes_equipe[tipo_gol] = max(previsao,0)
+              for time in times:
+                  Gols_T = [eval(Dados[Dados['time'] == time]['gf_casa'].values[0]),
+                            eval(Dados[Dados['time'] == time]['gs_casa'].values[0]),
+                            eval(Dados[Dados['time'] == time]['gf_fora'].values[0]),
+                            eval(Dados[Dados['time'] == time]['gs_fora'].values[0])]
 
-           # previsoes[time] = previsoes_equipe
+                  Res_jogos_C = [1 if gm > gs else 0 if gm < gs else 2 for gm, gs in zip(Gols_T[0], Gols_T[
+                      1])]  # Catalogando vitorias, empates, derrotas para os jogos em casa
+                  resC.append(Res_jogos_C)
 
-            previsoes_equipe = {}
-            for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
-                                        "Gols sofridos fora de casa"],
-                                       [gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
-                previsao = sum(dados)/len(dados)  # Previsão para x+1
-                previsoes_equipe[tipo_gol] = previsao
+                  Res_jogos_F = [1 if gm > gs else 0 if gm < gs else 2 for gm, gs in zip(Gols_T[2], Gols_T[
+                      3])]  # Catalogando vitorias, empates, derrotas para os jogos fora de casa
+                  resF.append(Res_jogos_F)
 
-            previsoes[time] = previsoes_equipe
- 
-           # medias_equipe = {}
-           # for tipo_gol, dados in zip(["Gols feitos em casa", "Gols sofridos em casa", "Gols feitos fora de casa",
-                                       # "Gols sofridos fora de casa"],
-                                       #[gols_feitos_casa, gols_sofridos_casa, gols_feitos_fora, gols_sofridos_fora]):
-                # medias_equipe[tipo_gol] = dados.mean()                    
-           # media_previsoes[time] = medias_equipe
+              return resC, resF
 
-        # Exibir as previsões apenas para os times escolhidos pelo usuário
-        # for time in [time1, time2]:
-        # print(f"Previsão para {time}:")
-        # for tipo_gol, previsao in previsoes[time].items():
-        # print(f"{tipo_gol}: {previsao}")
-
-        # Calcula as médias das previsões para os diferentes tipos de gols
-        media_entre_gols = {}
-        for tipo_gol in previsoes[time1]:
-            media_time1 = previsoes[time1][tipo_gol]
-            media_time2 = previsoes[time2][tipo_gol]
-            media_entre_gols[tipo_gol] = (media_time1 + media_time2) / 2
-
-        # Exibir as médias entre gols para os diferentes tipos de gols
-        # print("\nMédias entre gols para os times fornecidos:")
-        # for tipo_gol, media in media_entre_gols.items():
-        # print(f"{tipo_gol}: {media}")
-
-        # Calcula a expectativa de gol para cada time
-        expectativa_gol = {}
-        for time, previsoes_time in previsoes.items():
-            expectativa_gol[time] = {}
-            for tipo_gol, previsao in previsoes_time.items():
-                media = media_entre_gols.get(tipo_gol)
-                if media is not None:
-                    tipo_gol_formatado = tipo_gol.replace("Gols feitos", "Força de ataque").replace("Gols sofridos",
-                                                                                                    "Força de defesa")
-                    expectativa_gol[time][tipo_gol_formatado] = previsao / media
-
-        # Exibe a divisão das previsões pelos valores médios
-        # print("\nDivisão das previsões pelos valores médios:")
-        # for time, divisoes in expectativa_gol.items():
-        # print(f"\nExpectativa de gol para {time}:")
-        # for tipo_gol, divisao in divisoes.items():
-        # print(f"{tipo_gol}: {divisao}")
-
-        # Calcula os valores de m1 e m2
-        forca_ataque_time1_em_casa = expectativa_gol[time1]["Força de ataque em casa"]
-        forca_defesa_time2_fora = expectativa_gol[time2]["Força de defesa fora de casa"]
-        media_gols_feito_casa = media_entre_gols["Gols feitos em casa"]
-
-        m1 = forca_ataque_time1_em_casa * forca_defesa_time2_fora
-        # print("\nm1:", m1)
-
-        forca_ataque_time2_fora = expectativa_gol[time2]["Força de ataque fora de casa"]
-        forca_defesa_time1_em_casa = expectativa_gol[time1]["Força de defesa em casa"]
-        media_gols_feito_fora = media_entre_gols["Gols feitos fora de casa"]
-
-        m2 = forca_ataque_time2_fora * forca_defesa_time1_em_casa
+          Dados['Res_Casa'], Dados['Res_Fora'] = Resultado_Real_Jogos(Dados)
 
 
-        # print("m2:", m2)
+          def Gols_dos_times(Mandante, Visitante, Dados):
+              Gols_A, Gols_B = [], []
+              x = min(len(eval(Dados[Dados['time'] == Mandante]['gf_casa'].values[0])),
+                      len(eval(Dados[Dados['time'] == Visitante]['gf_fora'].values[0])))
+              # Coletando gols
+              Gols_A.append(eval(Dados[Dados['time'] == Mandante]['gf_casa'].values[0])[:x])
+              Gols_A.append(eval(Dados[Dados['time'] == Mandante]['gs_casa'].values[0])[:x])
+              Gols_A.append(eval(Dados[Dados['time'] == Mandante]['gf_fora'].values[0])[:x])
+              Gols_A.append(eval(Dados[Dados['time'] == Mandante]['gs_fora'].values[0])[:x])
+              #
+              Gols_B.append(eval(Dados[Dados['time'] == Visitante]['gf_casa'].values[0])[:x])
+              Gols_B.append(eval(Dados[Dados['time'] == Visitante]['gs_casa'].values[0])[:x])
+              Gols_B.append(eval(Dados[Dados['time'] == Visitante]['gf_fora'].values[0])[:x])
+              Gols_B.append(eval(Dados[Dados['time'] == Visitante]['gs_fora'].values[0])[:x])
 
-        # Calcula probabilidade
-        def f(x, y):
-            return (((np.e ** (-m1)) * m1 ** (x)) / (math.factorial(x))) * (
-                    ((np.e ** (-m2)) * (m2 ** (y))) / (math.factorial(y)))
+              return [Gols_A, Gols_B]
 
 
-        prob_vitoria_time1 = sum(f(x, y) for x in range(9) for y in range(9) if x > y)
-        prob_empate = sum(f(x, y) for x in range(9) for y in range(9) if x == y)
-        prob_vitoria_time2 = sum(f(x, y) for x in range(9) for y in range(9) if x < y)
+          def Medias(Mandante, Visitante, Dados):
+              equipes = Gols_dos_times(Mandante, Visitante, Dados)
+              medias_t1 = [np.mean(equipe[:10]) for equipe in equipes[0]]
+              medias_t2 = [np.mean(equipe[:10]) for equipe in equipes[1]]
+              return medias_t1, medias_t2
 
-        
 
-        imagens = {"Vasco": "https://logodownload.org/wp-content/uploads/2016/09/vasco-logo-4.png",
+          def Medias_do_Campeonato(Dados):
+              mg1 = mg2 = mg3 = mg4 = 0
+              times = Dados['time'].unique()
+              Gols = []
+              for time in times:
+                  mg1 += np.mean(eval(Dados[Dados['time'] == time]['gf_casa'].values[0]))
+                  mg2 += np.mean(eval(Dados[Dados['time'] == time]['gs_casa'].values[0]))
+                  mg3 += np.mean(eval(Dados[Dados['time'] == time]['gf_fora'].values[0]))
+                  mg4 += np.mean(eval(Dados[Dados['time'] == time]['gs_fora'].values[0]))
+              medias = [mg1 / len(times), mg2 / len(times), mg3 / len(times), mg4 / len(times)]
+              return medias
+
+
+          def Forca_Ataque_Defesa(Mandante, Visitante, Dados):
+              M_times = Medias(Mandante, Visitante, Dados)
+              geral = Medias_do_Campeonato(Dados)
+              F_timeA = [np.mean(media) for media in M_times[0]]
+              F_timeB = [np.mean(media) for media in M_times[1]]
+
+              return [F_timeA, F_timeB]
+
+
+          def Expectativa_de_Gol(Mandante, Visitante, Dados):
+              FA, FB = Forca_Ataque_Defesa(Mandante, Visitante, Dados)
+              geral = Medias_do_Campeonato(Dados)
+              E_timeA = FA[0] * FB[3] / geral[0]
+              E_timeB = FB[2] * FA[1] / geral[2]
+              return E_timeA, E_timeB
+
+
+          # Funções Probabilidade baseada no desempenho dos times
+          # iremos analizar os resultados das partidas dos dois times para ver quantas vitorias, derrotas e empates cada time teve em casa e fora
+          def Desempenho(Mandante, Visitante, Dados):
+              resC = Dados[Dados['time'] == Mandante]['Res_Casa'].values[0]
+              resF = Dados[Dados['time'] == Visitante]['Res_Fora'].values[0]
+
+              # Contagem de resultados para casa
+              V_casa = np.sum(np.array(resC) == 1)
+              D_casa = np.sum(np.array(resC) == 0)
+              E_casa = np.sum(np.array(resC) == 2)
+              # Contagem de resultados para fora
+              V_fora = np.sum(np.array(resF) == 1)
+              D_fora = np.sum(np.array(resF) == 0)
+              E_fora = np.sum(np.array(resF) == 2)
+
+              return [[V_casa, D_casa, E_casa], [V_fora, D_fora, E_fora]]
+
+
+          # utilizaremos os valores encontados da função Desempenho para determinar o desempenho dos times em casa e fora
+          # esse desempenho será dado por : nº de (Vitorias, empates ou derrotas em casa) / nº de partidas jogadas em casa
+          # essa condicional irá utilizar o desempenho do time nos ultimos jogos para ajustar o probabilidade encontrada inicialmente
+          def Ajuste(Mandante, Visitante, Dados):
+              desempenho = Desempenho(Mandante, Visitante, Dados)
+              c1 = desempenho[0]
+              c2 = desempenho[1]
+              # Somando os resultados de vitórias, derrotas e empates para casa e fora
+              totais = [sum(x) for x in zip(c1, c2)]
+              # Calcular a proporção
+              c1 = [c / t if t != 0 else np.mean(c1) for c, t in zip(c1, totais)]
+              c2 = [c / t if t != 0 else np.mean(c2) for c, t in zip(c2, totais)]
+              # Normalizar as proporções para somarem 1
+              c1 = [c / sum(c1) for c in c1]
+              c2 = [c / sum(c2) for c in c2]
+              # Calcular ajustes
+              ajuste_V = c1[0] * c2[0]
+              ajuste_D = c1[1] * c2[1]
+              ajuste_E = c1[2] * c2[2]
+
+
+              return [ajuste_V, ajuste_D, ajuste_E]
+
+
+          # FUNÇÕES PARA CALCULAR PROBABILIDADES E APLICAR AJUSTES
+          def f(x, y, EGA, EGB):  # EGA - expectativa de gol do time A; # EGB - expectativa de gol do time B
+              return poisson.pmf(x, EGA) * poisson.pmf(y, EGB)
+
+
+          def Previsao_jogo(Mandante, Visitante, Dados):
+              timeA = timeB = empate = 0
+              Condicional = Ajuste(Mandante, Visitante, Dados)
+              EGA, EGB = Expectativa_de_Gol(Mandante, Visitante, Dados)
+              # priori
+              probs = np.array([[f(i, j, EGA, EGB) for j in range(9)] for i in range(9)])
+              timeA = np.tril(probs, -1).sum()  # Soma todos os elementos abaixo da diagonal principal
+              timeB = np.triu(probs, 1).sum()  # Soma todos os elementos acima da diagonal principal
+              empate = np.trace(probs)  # Soma todos os elementos da diagonal principale
+              # Apricando Condicional
+              Prob = [timeA, timeB, empate]
+              equipes = [equipe * ajuste for equipe, ajuste in zip(Prob, Condicional)]
+              # Normalizar para que a soma seja 1
+              total = sum(equipes)
+              equipes = [equipe / total for equipe in equipes]
+              #
+              timeA, timeB, empate = equipes
+              return [timeA, timeB, empate]
+
+
+    imagens = {"Vasco": "https://logodownload.org/wp-content/uploads/2016/09/vasco-logo-4.png",
                    "São Paulo": "https://logodownload.org/wp-content/uploads/2016/09/sao-paulo-logo-escudo-768x766.png",
                    "Palmeiras": "https://logodownload.org/wp-content/uploads/2015/05/palmeiras-logo.png",
                    "Fortaleza": "https://logodownload.org/wp-content/uploads/2018/08/fortaleza-ec-logo-escudo-9-768x806.png",
@@ -178,35 +208,32 @@ if pagina == 'Previsão Brasileirão Série A':
                    "Vitória": "https://logodownload.org/wp-content/uploads/2017/02/ec-vitoria-logo-1.png",
                    "Grêmio": "https://logodownload.org/wp-content/uploads/2017/02/gremio-logo-escudo-2.png"}
 
+    previsao = Previsao_jogo(mandante, visitante, Dados)
+    if mandante and visitante:
+        st.write("---")
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            if mandante in imagens:
+                st.markdown(f"""
+                                    <div style='text-align: center;'>
+                                        <h1 style='color: #2E1F84;'>{mandante}</h1>
+                                        <h1 style='color: #2E1F84;'>{previsao[0]*100:.2f}%</h1>
+                                        <img src='{imagens[mandante]}'  width='200'> </div>
+                                 """, unsafe_allow_html=True)
+
+        with col2:
+            st.markdown(f""" <div style='text-align: center;'>
+                                    <h1 style='color: #FFBE0B;'>Empate</h1>
+                                    <h1 style='color: #FFBE0B;'>{previsao[2]*100:.2f}%</h1>
+                                     </div>""", unsafe_allow_html=True)
 
 
-        if time1 and time2:
-            st.write("---")
-            col1, col2, col3 = st.columns(3)
+        with col3:
+            if visitante in imagens:
+                st.markdown(f"""<div style='text-align: center;'>
+                                <h1 style='color: #2E1F84;'>{visitante}</h1>
+                                <h1 style='color: #2E1F84;'>{previsao[1]*100:.2f}%</h1>
+                                <img src='{imagens[visitante]}'  width='200'></div>""", unsafe_allow_html=True)
 
-            with col1:
-                if time1 in imagens:
-                    st.markdown(f"""
-                            <div style='text-align: center;'>
-                                <h4 style='color: #2E1F84;'>{time1}</h4>
-                                <h4 style='color: #2E1F84;'>{prob_vitoria_time1 * 100:.2f}%</h4>
-                                <img src='{imagens[time1]}'  width='200'>
-                    </div>
-                         """, unsafe_allow_html=True)
-
-            with col2:
-                st.markdown(f""" <div style='text-align: center;'>
-                            <h4 style='color: #FFBE0B;'>Empate</h4>
-                            <h4 style='color: #FFBE0B;'>{prob_empate * 100:.2f}%</h4>
-                             </div>""", unsafe_allow_html=True)
-
-
-            with col3:
-                if time1 in imagens:
-                    st.markdown(f"""<div style='text-align: center;'>
-                        <h4 style='color: #2E1F84;'>{time2}</h4>
-                        <h4 style='color: #2E1F84;'>{prob_vitoria_time2 * 100:.2f}%</h4>
-                        <img src='{imagens[time2]}'  width='200'></div>
-                        """, unsafe_allow_html=True)
-
-            st.write("---")
+        st.write("---")
